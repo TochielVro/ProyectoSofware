@@ -1,5 +1,72 @@
+<!DOCTYPE html>
 <html lang="es">
-    <head>
-        <title>HTML</title>
-    </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalle del Emprendimiento | EmprendeLocal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Detalle del Emprendimiento</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="emprendimientos.html">Explorar</a></li>
+          <li><a href="dashboard.html">Mi Perfil</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="detalle-emprendimiento">
+    <div class="container" id="detalleContainer">
+      <!-- Aquí se cargará el detalle dinámicamente -->
+    </div>
+  </section>
+
+<!-- Añade esto dentro de la sección de comentarios -->
+<section class="comentarios">
+  <div class="container">
+    <h2>Comentarios y valoraciones</h2>
+    
+    <div class="rating-promedio">
+      <div class="stars" id="ratingPromedio"></div>
+      <span id="ratingText">0/5 (0 reseñas)</span>
+    </div>
+    
+    <div class="add-comentario">
+      <h3>Deja tu reseña</h3>
+      <form id="formComentario">
+        <div class="rating-input">
+          <span>Valoración:</span>
+          <div class="stars">
+            <i class="fas fa-star" data-rating="1"></i>
+            <i class="far fa-star" data-rating="2"></i>
+            <i class="far fa-star" data-rating="3"></i>
+            <i class="far fa-star" data-rating="4"></i>
+            <i class="far fa-star" data-rating="5"></i>
+          </div>
+        </div>
+        <textarea id="textoComentario" placeholder="Escribe tu comentario..." required></textarea>
+        <button type="submit" class="btn">Enviar reseña</button>
+      </form>
+    </div>
+    
+    <div id="listaComentarios" class="lista-comentarios">
+      <!-- Comentarios se cargarán aquí -->
+    </div>
+  </div>
+</section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 EmprendeLocal. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/detalle.js"></script>
+</body>
 </html>
