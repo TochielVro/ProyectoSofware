@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explorar Emprendimientos | EmprendeLocal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Encabezado -->
+  <header>
+    <div class="container">
+      <h1>Explorar Emprendimientos</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="dashboard.html">Mi Perfil</a></li>
+          <li><a href="login.html">Ingresar</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Buscador -->
+  <section class="buscador">
+    <div class="container">
+      <input type="text" id="searchInput" placeholder="Buscar emprendimientos..." />
+    </div>
+  </section>
+
+  <!-- Lista de tarjetas -->
+  <section class="lista-emprendimientos">
+    <div class="container">
+      <h2>Todos los emprendimientos</h2>
+      <div id="cardsContainer" class="cards">
+        <!-- Aquí se cargarán las tarjetas dinámicamente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Pie de página -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 EmprendeLocal. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/emprendimientos.js"></script>
+</body>
+</html>
