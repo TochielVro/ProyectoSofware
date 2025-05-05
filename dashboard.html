@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel del Emprendedor | EmprendeLocal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="container">
+      <div class="logo">
+        <h1><i class="fas fa-store"></i> EmprendeLocal</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+          <li><a href="emprendimientos.html"><i class="fas fa-search"></i> Explorar</a></li>
+          <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="container">
+      <section class="welcome-section">
+        <h2><i class="fas fa-user"></i> Bienvenido, <span id="userName"></span></h2>
+        <p>Gestiona tus productos y emprendimientos</p>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="product-form">
+          <div class="card">
+            <h3><i class="fas fa-plus-circle"></i> Agregar nuevo producto</h3>
+            <form id="productoForm" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="nombre"><i class="fas fa-tag"></i> Nombre del producto</label>
+                <input type="text" id="nombre" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="descripcion"><i class="fas fa-align-left"></i> Descripción</label>
+                <textarea id="descripcion" required></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="imagen"><i class="fas fa-image"></i> Imagen del producto</label>
+                <div class="file-upload">
+                  <input type="file" id="imagen" accept="image/*" required>
+                  <label for="imagen" class="upload-btn">
+                    <i class="fas fa-cloud-upload-alt"></i> Seleccionar imagen
+                  </label>
+                  <span id="fileName">No se ha seleccionado archivo</span>
+                </div>
+                <div id="imagePreview" class="image-preview"></div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar Producto
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section class="product-list">
+          <div class="card">
+            <h3><i class="fas fa-box-open"></i> Mis Productos</h3>
+            <div id="productosContainer" class="products-grid">
+              <!-- Los productos se cargarán aquí dinámicamente -->
+              <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>Aún no has agregado productos</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="dashboard-footer">
+    <div class="container">
+      <p>&copy; 2025 EmprendeLocal. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
