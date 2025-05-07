@@ -7,18 +7,18 @@
 
 /* Variables de colores rústicos para artesanías */
 :root {
-  --color-primary: #8B4513;       /* Marrón sienna - color principal */
-  --color-primary-dark: #5D2906;  /* Marrón oscuro para énfasis */
-  --color-secondary: #D2B48C;     /* Tan - color secundario */
-  --color-accent: #CD853F;        /* Marrón Perú - acento */
-  --color-light: #F5F5DC;         /* Beige - color claro */
-  --color-dark: #3A2618;          /* Marrón oscuro - textos */
-  --color-success: #567D46;       /* Verde oliva - éxito */
-  --color-warning: #C98A4B;       /* Ocre - advertencia */
-  --color-danger: #9E3A3A;        /* Rojo óxido - error */
-  --color-white: #FFF8E7;         /* Blanco hueso */
-  --shadow-soft: 0 4px 12px rgba(58, 38, 24, 0.1);
-  --shadow-medium: 0 6px 16px rgba(58, 38, 24, 0.2);
+  --color-primary: #0d3b66;       /* Azul oscuro - color principal */
+  --color-primary-dark: #072040;  /* Azul oscuro más intenso */
+  --color-secondary: #00b4d8;     /* Azul celeste brillante - color secundario */
+  --color-accent: #7209b7;        /* Morado - acento */
+  --color-light: #e6f7fc;         /* Celeste muy claro - fondo */
+  --color-dark: #0a2540;          /* Azul oscuro - textos */
+  --color-success: #06d6a0;       /* Verde azulado - éxito */
+  --color-warning: #f28482;       /* Coral - advertencia */
+  --color-danger: #d62976;        /* Rosa/Púrpura - error */
+  --color-white: #ffffff;         /* Blanco puro */
+  --shadow-soft: 0 4px 12px rgba(13, 59, 102, 0.1);
+  --shadow-medium: 0 6px 16px rgba(13, 59, 102, 0.15);
   --radius-small: 5px;
   --radius-medium: 8px;
   --radius-large: 12px;
@@ -107,7 +107,7 @@ header nav ul li a:hover::after {
 
 /* Hero section */
 .hero {
-  background: linear-gradient(rgba(58, 38, 24, 0.7), rgba(58, 38, 24, 0.7)), url('../assets/img/WEB-VILLARAN-2.jpg') no-repeat center center/cover;
+  background: linear-gradient(#072040, #00b4d8), url('../assets/img/WEB-VILLARAN-2.jpg') no-repeat center center/cover;
   color: var(--color-white);
   padding: 120px 0;
   text-align: center;
