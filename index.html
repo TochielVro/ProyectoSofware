@@ -1,36 +1,81 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Emprendimientos Locales</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Estilos mejorados para el logo */
+    .logo-img {
+      height: 300px; /* Tamaño inicial más grande */
+      width: auto;
+      transition: all 0.3s ease;
+      transform-origin: left center; /* La escala crecerá desde la izquierda */
+    }
+    
+    .logo-img:hover {
+      opacity: 0.9;
+      transform: scale(1.1); /* Escala moderada */
+    }
+    
+    header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      min-height: 100px; /* Altura mínima para el header */
+    }
+    
+    /* Contenedor del logo con espacio suficiente */
+    .logo {
+      display: flex;
+      align-items: center;
+      height: 80px; /* Igual que la imagen */
+      margin-right: 20px; /* Espacio entre logo y navegación */
+    }
+    
+    /* Asegura que la navegación no se mueva */
+    nav ul {
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    
+    nav a {
+      white-space: nowrap; /* Evita saltos de línea */
+    }
+  </style>
 </head>
 <body>
   <!-- Encabezado de navegación -->
-<!-- ...dentro del header ya existente... -->
-<header>
-  <div class="container">
-    <h1>EmprendeLocal</h1>
-    <nav>
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="emprendimientos.html">Explorar</a></li>
-        <li><a href="login.html">Ingresar</a></li>
-        <li><a href="register.html">Registrarse</a></li>
-        <!-- Perfil visible solo si está logueado -->
-        <li class="perfil oculto">
-          <a href="dashboard.html">
-            <img src="assets/icons/user_1144760.png" alt="Perfil" class="icono-perfil" />
-            Mi perfil
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</header>
+  <header>
+    <div class="container">
+      <!-- Logo Localink -->
+      <a href="index.html" class="logo">
+        <img src="assets/img/Localink.png" alt="Localink - Conectando emprendedores locales" class="logo-img">
+      </a>
+      
+      <nav>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="emprendimiento.html">Explorar</a></li>
+          <li><a href="login.html">Ingresar</a></li>
+          <li><a href="register.html">Registrarse</a></li>
+          <!-- Perfil visible solo si está logueado -->
+          <li class="perfil oculto">
+            <a href="dashboard.html">
+              <img src="assets/icons/user_1144760.png" alt="Perfil" class="icono-perfil">
+              Mi perfil
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
   <!-- Hero / Sección principal -->
   <section class="hero">
@@ -40,25 +85,26 @@
       <a href="emprendimientos.html" class="btn">Explorar ahora</a>
     </div>
   </section>
+
   <!-- Sección de emprendimientos destacados -->
-<section class="destacados">
+  <section class="destacados">
     <div class="container">
       <h2>Emprendimientos Destacados</h2>
       <div class="cards">
         <div class="card">
-          <img src="assets/img/Artesania.jpeg" alt="Artesanía Sol" />
+          <img src="assets/img/Artesania.jpeg" alt="Artesanía Sol">
           <h3>Artesanía Sol</h3>
           <p>Productos hechos a mano con dedicación y arte.</p>
           <a href="detalle.html" class="btn">Ver más</a>
         </div>
         <div class="card">
-          <img src="assets/img/panaderia.jpeg" alt="Panadería La Esperanza" />
+          <img src="assets/img/panaderia.jpeg" alt="Panadería La Esperanza">
           <h3>Panadería La Esperanza</h3>
           <p>Pan recién horneado todos los días.</p>
           <a href="detalle.html" class="btn">Ver más</a>
         </div>
         <div class="card">
-          <img src="assets/img/jardineria.jpeg" alt="Verde Hogar" />
+          <img src="assets/img/jardineria.jpeg" alt="Verde Hogar">
           <h3>Verde Hogar</h3>
           <p>Servicios de jardinería y plantas ornamentales.</p>
           <a href="detalle.html" class="btn">Ver más</a>
@@ -67,35 +113,35 @@
     </div>
   </section>
   
-<!-- Sección Quiénes Somos -->
-    <section class="quienes-somos">
-        <div class="container">
-        <h2>¿Quiénes Somos?</h2>
-        <p>
-            EmprendeLocal es una plataforma dedicada a conectar a los pequeños
-            emprendedores con su comunidad. Creemos en el poder de lo local y en
-            el impacto positivo que tienen los negocios independientes en nuestra
-            economía y cultura.
-        </p>
-        </div>
-    </section>
-    <!-- Redes Sociales -->
-    <section class="redes-sociales">
-        <div class="container">
-        <h2>Síguenos en redes sociales</h2>
-        <div class="iconos">
-            <a href="#"><img src="assets/icons/facebook_3991644.png" alt="Facebook" /></a>
-            <a href="#"><img src="assets/icons/instagram_4494488.png" alt="Instagram" /></a>
-            <a href="#"><img src="assets/icons/letter-x_8207032.png" alt="Twitter" /></a>
-        </div>
-        </div>
-    </section>
-  
+  <!-- Sección Quiénes Somos -->
+  <section class="quienes-somos">
+    <div class="container">
+      <h2>¿Quiénes Somos?</h2>
+      <p>
+        Localink es una plataforma dedicada a conectar a los pequeños
+        emprendedores con su comunidad. Creemos en el poder de lo local y en
+        el impacto positivo que tienen los negocios independientes en nuestra
+        economía y cultura.
+      </p>
+    </div>
+  </section>
+
+  <!-- Redes Sociales -->
+  <section class="redes-sociales">
+    <div class="container">
+      <h2>Síguenos en redes sociales</h2>
+      <div class="iconos">
+        <a href="#"><img src="assets/icons/facebook_3991644.png" alt="Facebook"></a>
+        <a href="#"><img src="assets/icons/instagram_4494488.png" alt="Instagram"></a>
+        <a href="#"><img src="assets/icons/letter-x_8207032.png" alt="Twitter"></a>
+      </div>
+    </div>
+  </section>
   
   <!-- Pie de página -->
   <footer>
     <div class="container">
-      <p>&copy; 2025 EmprendeLocal. Todos los derechos reservados.</p>
+      <p>&copy; 2025 Localink. Todos los derechos reservados.</p>
     </div>
   </footer>
 </body>
