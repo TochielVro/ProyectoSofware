@@ -1,67 +1,63 @@
-document.addEventListener("DOMContentLoaded", function() {
-  // ===========================================
-  // VERIFICACIÓN DE SESIÓN Y CONFIGURACIÓN INICIAL
-  // ===========================================
+document.addEventListener("DOMContentLoaded", function () {
   try {
-    // Verificar sesión activa
+    // Intentamos obtener el usuario actual del localStorage
     const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    // Si no hay usuario, redirigimos al login
     if (!user) {
       window.location.href = "login.html";
       return;
     }
 
-    // Mostrar datos del usuario
+    // Mostramos el nombre del usuario si existe
     const userNameElement = document.getElementById("userName");
     if (userNameElement) {
       userNameElement.textContent = user.nombre || "Emprendedor";
     }
 
-    // ===========================================
-    // ELEMENTOS DEL DOM Y CONFIGURACIÓN
-    // ===========================================
+    // Obtenemos referencias a los elementos del DOM necesarios
     const fileInput = document.getElementById("imagen");
     const fileName = document.getElementById("fileName");
     const imagePreview = document.getElementById("imagePreview");
     const form = document.getElementById("productoForm");
     const productosContainer = document.getElementById("productosContainer");
 
-    // Verificar que todos los elementos existan
+    // Si alguno no existe, lanzamos un error
     if (!fileInput || !fileName || !imagePreview || !form || !productosContainer) {
       throw new Error("Elementos del DOM no encontrados");
     }
 
-    // ===========================================
-    // MANEJO DE SUBIDA DE IMÁGENES
-    // ===========================================
+    // Evento para cuando se selecciona una imagen
     fileInput.addEventListener("change", handleFileUpload);
 
     function handleFileUpload(e) {
       const file = e.target.files[0];
-      
+
       if (file) {
-        // Validar tipo de archivo
+        // Verificamos que el archivo sea una imagen
         if (!file.type.match("image.*")) {
           showAlert("Solo se permiten archivos de imagen (JPEG, PNG, etc.)", "error");
           resetFileInput();
           return;
         }
-        
-        // Validar tamaño (máximo 2MB)
+
+        // Verificamos que no pese más de 2MB
         if (file.size > 2 * 1024 * 1024) {
           showAlert("La imagen no debe superar los 2MB", "error");
           resetFileInput();
           return;
         }
 
+        // Mostramos el nombre del archivo (truncado si es muy largo)
         fileName.textContent = truncateFileName(file.name, 20);
-        
-        // Mostrar previsualización
+
+        // Previsualización de la imagen
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
           imagePreview.innerHTML = `<img src="${event.target.result}" alt="Previsualización">`;
           imagePreview.style.display = "block";
         };
-        reader.onerror = function() {
+        reader.onerror = function () {
           showAlert("Error al leer la imagen", "error");
           resetFileInput();
         };
@@ -71,94 +67,86 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
+    // Reseteamos el input de archivo
     function resetFileInput() {
       fileInput.value = "";
       fileName.textContent = "No se ha seleccionado archivo";
       imagePreview.style.display = "none";
     }
 
-    // ===========================================
-    // MANEJO DEL FORMULARIO DE PRODUCTOS
-    // ===========================================
+    // Evento de envío del formulario
     form.addEventListener("submit", handleFormSubmit);
 
     function handleFormSubmit(e) {
       e.preventDefault();
-      
+
       const nombre = document.getElementById("nombre").value.trim();
       const descripcion = document.getElementById("descripcion").value.trim();
       const imagen = fileInput.files[0];
-      
-      // Validaciones
+
+      // Validaciones básicas
       if (!nombre || nombre.length < 3) {
         showAlert("El nombre debe tener al menos 3 caracteres", "error");
         return;
       }
-      
+
       if (!descripcion || descripcion.length < 10) {
         showAlert("La descripción debe tener al menos 10 caracteres", "error");
         return;
       }
-      
+
       if (!imagen) {
         showAlert("Debes seleccionar una imagen", "error");
         return;
       }
 
-      // Crear objeto de producto
+      // Creamos el objeto del producto
       const producto = {
         id: "prod_" + Date.now().toString(),
         nombre,
         descripcion,
-        imagen: URL.createObjectURL(imagen),
+        imagen: URL.createObjectURL(imagen), // esto se sobreescribirá luego por el base64
         fecha: new Date().toLocaleString(),
         usuario: user.email,
-        estado: "activo"
+        estado: "activo",
       };
-      
-      // Guardar producto
+
+      // Guardamos el producto y emprendimiento
       saveProduct(producto);
-      
-      // Resetear formulario
+
+      // Limpiamos el formulario y la vista
       form.reset();
       resetFileInput();
       showAlert("Producto agregado correctamente", "success");
     }
 
-    // ===========================================
-    // CERRAR SESIÓN
-    // ===========================================
+    // Botón de logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
-      logoutBtn.addEventListener("click", function() {
+      logoutBtn.addEventListener("click", function () {
         localStorage.removeItem("currentUser");
         window.location.href = "index.html";
       });
     }
 
-    // ===========================================
-    // CARGAR PRODUCTOS INICIALES
-    // ===========================================
+    // Cargamos los productos del usuario
     loadProducts();
 
-    // ===========================================
-    // FUNCIONES AUXILIARES
-    // ===========================================
+    // Guardar producto y emprendimiento en localStorage
     function saveProduct(producto) {
       try {
         const reader = new FileReader();
-        reader.onload = function(event) {
-          // 1. Guardar en productos del usuario
+        reader.onload = function (event) {
           let productos = JSON.parse(localStorage.getItem("userProducts")) || [];
           const newProduct = {
             ...producto,
-            imagen: event.target.result,
-            eliminado: false // Flag de estado
+            imagen: event.target.result, // guardamos como base64
+            eliminado: false,
           };
           productos.push(newProduct);
           localStorage.setItem("userProducts", JSON.stringify(productos));
-          
-          // 2. Guardar en emprendimientos públicos
+
+          // También guardamos el emprendimiento
           let emprendimientos = JSON.parse(localStorage.getItem("userEmprendimientos")) || [];
           emprendimientos.push({
             id: `emp_${producto.id}`,
@@ -169,10 +157,11 @@ document.addEventListener("DOMContentLoaded", function() {
             usuario: user.email,
             nombreUsuario: user.nombre,
             aprobado: true,
-            eliminado: false
+            eliminado: false,
           });
           localStorage.setItem("userEmprendimientos", JSON.stringify(emprendimientos));
-          
+
+          // Recargamos productos en pantalla
           loadProducts();
           showAlert("Emprendimiento registrado exitosamente", "success");
         };
@@ -183,6 +172,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
+    // Función extra no usada actualmente, por si se requiere guardar solo emprendimiento
     function saveEmprendimiento(producto) {
       try {
         const emprendimiento = {
@@ -192,9 +182,9 @@ document.addEventListener("DOMContentLoaded", function() {
           imagen: producto.imagen,
           fecha: producto.fecha,
           usuario: producto.usuario,
-          aprobado: true
+          aprobado: true,
         };
-        
+
         let emprendimientos = JSON.parse(localStorage.getItem("userEmprendimientos")) || [];
         emprendimientos.push(emprendimiento);
         localStorage.setItem("userEmprendimientos", JSON.stringify(emprendimientos));
@@ -203,11 +193,13 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
+    // Mostrar todos los productos del usuario en la interfaz
     function loadProducts() {
       try {
         const productos = JSON.parse(localStorage.getItem("userProducts")) || [];
         const userProducts = productos.filter(p => p.usuario === user.email && p.estado === "activo");
-        
+
+        // Si no hay productos, mostramos mensaje de estado vacío
         if (userProducts.length === 0) {
           productosContainer.innerHTML = `
             <div class="empty-state">
@@ -217,7 +209,8 @@ document.addEventListener("DOMContentLoaded", function() {
           `;
           return;
         }
-        
+
+        // Generamos las tarjetas de productos
         productosContainer.innerHTML = userProducts.map(producto => `
           <div class="product-card" data-id="${producto.id}">
             <div class="product-image">
@@ -249,6 +242,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
 
+    // Muestra una alerta en la parte superior del formulario
     function showAlert(message, type) {
       try {
         const alertDiv = document.createElement("div");
@@ -257,27 +251,29 @@ document.addEventListener("DOMContentLoaded", function() {
           <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
           ${message}
         `;
-        
+
         form.prepend(alertDiv);
-        
+
+        // Desaparece automáticamente luego de unos segundos
         setTimeout(() => {
           alertDiv.classList.add("fade-out");
           setTimeout(() => alertDiv.remove(), 300);
         }, 5000);
       } catch (error) {
         console.error("Error al mostrar alerta:", error);
-        alert(message); // Fallback básico
+        alert(message);
       }
     }
 
+    // Truncar nombre de archivo para evitar que sea muy largo
     function truncateFileName(name, maxLength) {
       if (name.length <= maxLength) return name;
       return name.substring(0, maxLength) + '...' + name.split('.').pop();
     }
 
   } catch (error) {
+    // Error global por si falla algo al cargar la app
     console.error("Error inicial:", error);
-    // Redirigir a página de error o mostrar mensaje
     const mainContent = document.querySelector('main');
     if (mainContent) {
       mainContent.innerHTML = `
@@ -291,35 +287,31 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
-// ===========================================
-// FUNCIONES GLOBALES
-// ===========================================
-window.deleteProduct = function(id) {
+// Eliminar producto y emprendimiento asociado
+window.deleteProduct = function (id) {
   if (confirm("¿Estás seguro de eliminar este emprendimiento permanentemente?")) {
     try {
-      // 1. Eliminar de productos del dashboard
       let productos = JSON.parse(localStorage.getItem("userProducts")) || [];
       productos = productos.filter(p => p.id !== id);
       localStorage.setItem("userProducts", JSON.stringify(productos));
-      
-      // 2. Eliminar el emprendimiento público asociado
+
       let emprendimientos = JSON.parse(localStorage.getItem("userEmprendimientos")) || [];
       emprendimientos = emprendimientos.filter(e => e.id !== `emp_${id}`);
       localStorage.setItem("userEmprendimientos", JSON.stringify(emprendimientos));
-      
-      // 3. Eliminar de la vista en tiempo real
+
+      // Quitamos visualmente la tarjeta con una pequeña animación
       const cardsToRemove = document.querySelectorAll(`[data-id="${id}"], [data-id="emp_${id}"]`);
       cardsToRemove.forEach(card => {
         card.classList.add('deleting');
         setTimeout(() => card.remove(), 300);
       });
-      
-      // 4. Mostrar estado vacío si es necesario
+
+      // Si ya no quedan tarjetas, mostramos estado vacío
       setTimeout(() => {
         const remainingCards = document.querySelectorAll('.card, .product-card');
         if (remainingCards.length === 0) {
-          const container = document.getElementById("productosContainer") || 
-                          document.getElementById("cardsContainer");
+          const container = document.getElementById("productosContainer") ||
+            document.getElementById("cardsContainer");
           if (container) {
             container.innerHTML = `
               <div class="empty-state">
@@ -330,7 +322,7 @@ window.deleteProduct = function(id) {
           }
         }
       }, 350);
-      
+
     } catch (error) {
       console.error("Error al eliminar:", error);
       alert("Ocurrió un error al eliminar el emprendimiento");
@@ -338,9 +330,7 @@ window.deleteProduct = function(id) {
   }
 };
 
-window.editProduct = function(id) {
-  // Implementar lógica de edición aquí
+// Función vacía por ahora, se puede implementar para editar
+window.editProduct = function (id) {
   console.log("Editar producto:", id);
-  // Esto podría abrir un modal con el formulario prellenado
-  // o redirigir a una página de edición
 };

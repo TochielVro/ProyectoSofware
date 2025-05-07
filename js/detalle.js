@@ -1,28 +1,29 @@
 document.addEventListener("DOMContentLoaded", async function() {
+  // Obtener parámetros de la URL (id y type) para determinar qué emprendimiento cargar
   const params = new URLSearchParams(window.location.search);
   const emprendimientoId = params.get("id");
   const type = params.get("type");
   const container = document.getElementById("detalleContainer");
-  
+
   // Variables globales
-  let selectedRating = 0;
-  let emprendimiento;
+  let selectedRating = 0;  // Valoración seleccionada por el usuario
+  let emprendimiento;      // Emprendimiento a mostrar
 
   try {
-    // Cargar emprendimiento
+    // Cargar el emprendimiento según el tipo
     if (type === "static") {
-      const response = await fetch("data/emprendimientos.json");
+      const response = await fetch("data/emprendimientos.json");  // Cargar datos estáticos
       if (!response.ok) throw new Error("Error al cargar JSON");
       const data = await response.json();
-      emprendimiento = data.find(item => item.id == emprendimientoId);
+      emprendimiento = data.find(item => item.id == emprendimientoId);  // Buscar el emprendimiento por ID
     } else {
       const userData = JSON.parse(localStorage.getItem("userEmprendimientos")) || [];
-      emprendimiento = userData.find(item => item.id === emprendimientoId);
+      emprendimiento = userData.find(item => item.id === emprendimientoId);  // Buscar en los emprendimientos del usuario
     }
     
     if (!emprendimiento) throw new Error("Emprendimiento no encontrado");
 
-    // Renderizar el emprendimiento
+    // Renderizar el emprendimiento en el contenedor
     container.innerHTML = `
       <div class="emprendimiento-detalle">
         <div class="emprendimiento-header">
@@ -74,22 +75,23 @@ document.addEventListener("DOMContentLoaded", async function() {
       </div>
     `;
 
-    // Configurar estrellas interactivas
+    // Configurar las estrellas interactivas para seleccionar la valoración
     document.querySelectorAll('.rating-input .stars i').forEach(star => {
       star.addEventListener('click', function() {
-        selectedRating = parseInt(this.getAttribute('data-rating'));
-        updateStars(selectedRating, this.parentElement);
+        selectedRating = parseInt(this.getAttribute('data-rating'));  // Obtener la valoración seleccionada
+        updateStars(selectedRating, this.parentElement);  // Actualizar las estrellas visualmente
       });
     });
 
-    // Cargar y mostrar comentarios
+    // Cargar y mostrar los comentarios existentes
     await loadComentarios();
-    await updateRatingPromedio();
+    await updateRatingPromedio();  // Actualizar la valoración promedio de los comentarios
 
-    // Manejar envío de comentarios
+    // Manejar el envío de un nuevo comentario
     document.getElementById("formComentario").addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
+      e.preventDefault();  // Prevenir comportamiento por defecto del formulario
+
+      // Verificar si el usuario está autenticado
       const user = JSON.parse(localStorage.getItem("currentUser"));
       if (!user) {
         alert("Debes iniciar sesión para comentar");
@@ -97,8 +99,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         return;
       }
 
+      // Obtener el texto del comentario
       const comentarioTexto = document.getElementById("textoComentario").value.trim();
       
+      // Validación
       if (!selectedRating) {
         alert("Por favor selecciona una valoración");
         return;
@@ -109,8 +113,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         return;
       }
 
+      // Crear un nuevo objeto de comentario
       const nuevoComentario = {
-        id: Date.now().toString(),
+        id: Date.now().toString(),  // Usamos la hora actual como ID único
         emprendimientoId,
         type,
         usuarioId: user.id,
@@ -120,10 +125,12 @@ document.addEventListener("DOMContentLoaded", async function() {
         fecha: new Date().toISOString()
       };
 
+      // Guardar el comentario y actualizar la lista
       await saveComentario(nuevoComentario);
       await updateRatingPromedio();
       await loadComentarios();
       
+      // Resetear el formulario
       this.reset();
       selectedRating = 0;
       updateStars(0, document.querySelector('.rating-input .stars'));
@@ -140,16 +147,18 @@ document.addEventListener("DOMContentLoaded", async function() {
     `;
   }
 
-  // Funciones auxiliares
+  // Función para cargar los comentarios desde el almacenamiento
   async function loadComentarios() {
     try {
       const response = await fetch("data/comentarios.json");
       const allComentarios = await response.json();
       
+      // Filtrar los comentarios relacionados con el emprendimiento actual
       const comentarios = allComentarios.filter(c => 
         c.emprendimientoId === emprendimientoId && c.type === type
-      ).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      ).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));  // Ordenar por fecha descendente
       
+      // Renderizar los comentarios en la página
       const listaComentarios = document.getElementById("listaComentarios");
       listaComentarios.innerHTML = comentarios.map(comentario => `
         <div class="comentario">
@@ -172,15 +181,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
   }
 
+  // Función para guardar un nuevo comentario en localStorage
   async function saveComentario(comentario) {
     try {
-      // En un entorno real, aquí harías una petición POST al servidor
-      // Simulamos guardado local
       let comentarios = JSON.parse(localStorage.getItem("comentariosTemporales") || "[]");
       comentarios.push(comentario);
-      localStorage.setItem("comentariosTemporales", JSON.stringify(comentarios));
-      
-      // Actualizar stats del emprendimiento
+      localStorage.setItem("comentariosTemporales", JSON.stringify(comentarios));  // Guardar en localStorage
+
+      // Actualizar las estadísticas del emprendimiento
       if (type === "user") {
         let emprendimientos = JSON.parse(localStorage.getItem("userEmprendimientos")) || [];
         const index = emprendimientos.findIndex(e => e.id === emprendimientoId);
@@ -201,20 +209,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
   }
 
+  // Función para actualizar la valoración promedio
   async function updateRatingPromedio() {
     try {
       const listaComentarios = document.getElementById("listaComentarios");
       const ratingPromedio = document.getElementById("ratingPromedio");
       const ratingText = document.getElementById("ratingText");
       
-      // Simulamos carga de comentarios (en realidad sería una petición al backend)
+      // Obtener los comentarios del emprendimiento
       const comentarios = JSON.parse(localStorage.getItem("comentariosTemporales") || "[]")
         .filter(c => c.emprendimientoId === emprendimientoId && c.type === type);
       
       const total = comentarios.length;
       const rating = total > 0 ? 
-        comentarios.reduce((acc, c) => acc + c.rating, 0) / total : 0;
+        comentarios.reduce((acc, c) => acc + c.rating, 0) / total : 0;  // Calcular la media
       
+      // Actualizar el promedio de estrellas y el texto
       ratingPromedio.innerHTML = renderStars(rating);
       ratingText.textContent = `${rating.toFixed(1)}/5 (${total} ${total === 1 ? 'reseña' : 'reseñas'})`;
     } catch (error) {
@@ -222,11 +232,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
   }
 
+  // Función para renderizar las estrellas según la valoración
   function renderStars(rating) {
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     
+    // Generar estrellas completas, medias y vacías
     for (let i = 1; i <= 5; i++) {
       if (i <= fullStars) {
         stars.push('<i class="fas fa-star"></i>');
@@ -239,9 +251,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     return stars.join('');
   }
 
+  // Función para actualizar las estrellas en el formulario de valoración
   function updateStars(rating, starsContainer) {
     starsContainer.querySelectorAll('i').forEach((star, index) => {
-      star.className = index < rating ? 'fas fa-star' : 'far fa-star';
+      star.className = index < rating ? 'fas fa-star' : 'far fa-star';  // Cambiar clase según la valoración
     });
   }
 });
